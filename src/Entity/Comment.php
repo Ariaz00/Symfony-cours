@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
-class Comment
+ class Comment implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,7 +21,10 @@ class Comment
     private ?string $text = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $no = null;
+    private ?string $email = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -29,6 +32,8 @@ class Comment
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photoFilename = null;
+
+
 
     public function getId(): ?int
     {
@@ -59,14 +64,26 @@ class Comment
         return $this;
     }
 
-    public function getNo(): ?string
+    public function getEmail(): ?string
     {
-        return $this->no;
+        return $this->email;
     }
 
-    public function setNo(string $no): static
+    public function setEmail(string $email): static
     {
-        $this->no = $no;
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -94,4 +111,10 @@ class Comment
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return (string) $this->getEmail();
+    }
+
 }
