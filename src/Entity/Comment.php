@@ -6,8 +6,11 @@ use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
+
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
- class Comment implements \Stringable
+#[ORM\HasLifecycleCallbacks]
+class Comment implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,7 +36,10 @@ use Doctrine\ORM\Mapping as ORM;
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photoFilename = null;
 
-
+    public function __toString(): string
+    {
+        return (string) $this->getEmail();
+    }
 
     public function getId(): ?int
     {
@@ -88,6 +94,13 @@ use Doctrine\ORM\Mapping as ORM;
         return $this;
     }
 
+    #[ORM\PrePersist]
+    public function setCreatedAtValue() : static
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        return $this;
+    }
+
     public function getConference(): ?Conference
     {
         return $this->conference;
@@ -111,10 +124,4 @@ use Doctrine\ORM\Mapping as ORM;
 
         return $this;
     }
-
-    public function __toString(): string
-    {
-        return (string) $this->getEmail();
-    }
-
 }
