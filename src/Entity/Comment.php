@@ -2,29 +2,37 @@
 
 namespace App\Entity;
 
-use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Trait\Timestampable;
+use App\Repository\CommentRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Comment implements \Stringable
 {
     use Timestampable;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     #[ORM\Column(length: 255)]
     private ?string $author = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $text = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
@@ -102,5 +110,10 @@ class Comment implements \Stringable
         $this->photoFilename = $photoFilename;
 
         return $this;
+    }
+
+    public static function setFilename(UploadedFile $photo): string
+    {
+        return bin2hex(random_bytes(6)) . '.' . $photo->guessExtension();
     }
 }
