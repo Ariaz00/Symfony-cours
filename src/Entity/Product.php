@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Trait\Timestampable;
+use App\Repository\ProductRepository;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Product implements \Stringable
 {
+    use Timestampable;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -17,11 +21,11 @@ class Product implements \Stringable
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
-
     #[ORM\Column]
     private ?float $price = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
@@ -49,18 +53,6 @@ class Product implements \Stringable
         return $this;
     }
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
     public function getPrice(): ?float
     {
         return $this->price;
@@ -73,15 +65,29 @@ class Product implements \Stringable
         return $this;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategory(?Category $Category): static
+    public function setCategory(?Category $category): static
     {
-        $this->category = $Category;
+        $this->category = $category;
 
         return $this;
     }
+
+    
 }

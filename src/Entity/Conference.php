@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ConferenceRepository;
 use Doctrine\Common\Collections\Collection;
@@ -10,9 +11,12 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ConferenceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[UniqueEntity('slug')]
 class Conference implements \Stringable
 {
+    use Timestampable;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -43,7 +47,7 @@ class Conference implements \Stringable
 
     public function __toString(): string
     {
-        return $this->city.' '.$this->year;
+        return $this->city.' | '.$this->year;
     }
 
     public function getId(): ?int
