@@ -58,17 +58,21 @@
 					{% endif %}
 				</div>
 
-				<h2>Add your own feedback</h2>
+				<h2 class="text-xl font-bold mt-8 mb-2">Add your own feedback</h2>
 
-				{{ form(comment_form) }}
-					{% else %}
-						<div class="bg-white shadow overflow-hidden sm:rounded-lg">
-							<div class="px-4 py-5 sm:p-6">
-								<p class="text-gray-500 text-center">No comments have been posted yet for this conference.</p>
-							</div>
-						</div>                        
-				{% endif %}
-                
-			</div>
+				{{ form_start(comment_form, {'attr': {'class': 'space-y-8'}}) }}
+				<div class="bg-white shadow overflow-hidden sm:rounded-lg">
+					<div class="px-4 py-5 sm:p-6">
+						{{ form_row(comment_form.author, {'label': 'Your name', 'attr': {'class': 'w-full'}}) }}
+						{{ form_row(comment_form.email, {'label': 'Your email', 'attr': {'class': 'w-full'}}) }}
+						{{ form_row(comment_form.text, {'label': 'Your thoughts', 'attr': {'class': 'w-full'}}) }}
+						{{ form_row(comment_form.photo, {'label': 'Your photo', 'attr': {'class': 'w-full'}}) }}
+						{{ form_row(comment_form.submit, {'label': 'Submit', 'attr': {'class': ' mt-4 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}}) }}
+					</div>
+				</div>
+				{{ form_end(comment_form) }}
+			{% endif %}
+
 		</div>
-	{% endblock %}
+	</div>
+{% endblock %}
